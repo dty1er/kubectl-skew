@@ -24,18 +24,15 @@ latest:  %s`
   Server version: %s
   Client version: %s`
 
-	serverTooOldTemplate = `Your kubernetes server version is unsupported.
-There are %d minor version skew with the latest one which must be within 2.`
+	serverTooOldTemplate = `Your kubernetes cluster version is unsupported.
+There are %d minor version skew with the latest which must be within 2.`
 
 	clientTooOldTemplate = `Your kubectl version is unsupported.
 There are %d minor version skew with the server which must be within 1.`
 
 	clientTooNewOrServerTooOldTemplate = `Your kubernetes cluster version is supported, but your kubectl version is too new. 
-kubectl and kubernetes cluster version delta must be within 1, but it's %d. 
-You can update kubernetes cluster or downgrade kubectl to follow version skew policy.`
-
-	installSuggestion = `# If you want to install proper versioned kubectl automatically, 
-  run "kubectl ver install". For more details, see "kubectl ver install --help"`
+kubectl and kubernetes cluster version skew must be within 1, but it's %d.
+You can update kubernetes cluster or downgrade kubectl to follow the version skew policy.`
 )
 
 type Versions struct {
@@ -126,16 +123,12 @@ func RunSkew() func(c *cobra.Command, args []string) error {
 				skew.ServerAndClientDelta,
 			)
 			fmt.Println("")
-			fmt.Println(yellow(installSuggestion))
-			fmt.Println("")
 		}
 		if skew.ClientNeedsDowngradeOrServerCanBeUpdated {
 			fmt.Fprintf(
 				os.Stdout, yellow(clientTooNewOrServerTooOldTemplate),
-				skew.ServerAndClientDelta, installSuggestion,
+				skew.ServerAndClientDelta,
 			)
-			fmt.Println("")
-			fmt.Println(yellow(installSuggestion))
 			fmt.Println("")
 		}
 

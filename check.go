@@ -39,13 +39,13 @@ func RunCheck() func(c *cobra.Command, args []string) error {
 			return err
 		}
 
-		template := "kubectl: %s\nlatest:  %s\n"
+		template := "current: v%s\nlatest:  v%s\n"
 
 		fmt.Fprintf(os.Stdout, template, versions.Client, latest)
 
 		if latest.Compare(versions.Client) != 0 {
-			template = "kubectl update is available.\nYou can update it by \"kubectl ver install\" command. \nFor more details, see \"kubectl ver install --help\"\n"
-			fmt.Fprintf(os.Stdout, yellow(template))
+			template = "kubectl update v%s is available.\n"
+			fmt.Fprintf(os.Stdout, yellow(template), latest)
 		} else {
 			template = "kubectl is already up-to-date.\n"
 			fmt.Fprintf(os.Stdout, green(template))

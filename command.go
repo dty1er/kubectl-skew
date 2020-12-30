@@ -35,12 +35,10 @@ func New(streams genericclioptions.IOStreams) *cobra.Command {
 	ver := NewVerCmd()
 	check := NewCheckCmd()
 	skew := NewSkewCmd()
-	install := NewInstallCmd()
 
 	o.configFlags.AddFlags(ver.Flags())
 	ver.AddCommand(check)
 	ver.AddCommand(skew)
-	ver.AddCommand(install)
 
 	return ver
 }
