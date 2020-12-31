@@ -1,20 +1,4 @@
 // Copyright © 2021 Hidetatsu Yaginuma. All rights reserved.
-// package main
-
-// import (
-// 	"os"
-
-// 	kubectlver "github.com/dty1er/kubectl-ver"
-// )
-
-// func main() {
-// 	// app := kubectlver.NewApp(os.Args[0])
-// 	// app.Run(os.Args)
-
-// 	root := kubectlver.NewApp(os.Args[0])
-// 	app.Run(os.Args)
-// }
-
 package main
 
 import (
