@@ -5,9 +5,7 @@
 
 kubectl plugin for better "kubectl version"
 
-* You can change color theme for light-backgrounded environment
-
-![image](https://user-images.githubusercontent.com/60682957/95733403-0c523b00-0cbd-11eb-9ff9-abc5469e97ca.png)
+![skew-s](https://user-images.githubusercontent.com/60682957/105186576-35fce700-5b75-11eb-8e3a-cd4c0fdabff4.png)
 
 ## What's this?
 
