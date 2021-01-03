@@ -59,7 +59,9 @@ func NewSkewCmd() *cobra.Command {
 	skew := &cobra.Command{
 		Use:   "skew [flags]",
 		Short: "checks kubernetes cluster and kubectl version skew",
-		RunE:  RunSkew(),
+		RunE: func(c *cobra.Command, args []string) error {
+			return RunSkew()
+		},
 	}
 
 	// flags for debug
@@ -71,76 +73,74 @@ func NewSkewCmd() *cobra.Command {
 	return skew
 }
 
-func RunSkew() func(c *cobra.Command, args []string) error {
-	return func(c *cobra.Command, args []string) error {
-		versions, err := InspectCurrentVersion()
-		if err != nil {
-			return err
-		}
-
-		latest, err := InspectLatestVersion()
-		if err != nil {
-			return err
-		}
-
-		fmt.Fprintf(
-			os.Stdout, verTemplate,
-			versions.Server, versions.Client, latest,
-		)
-
-		fmt.Println("")
-
-		skew := CalcKubeVerSkew(latest, versions.Server, versions.Client)
-
-		ok := green("OK")
-		ng := red("NG")
-		serverCheckResult := ok
-		if skew.ServerNeedsUpdate {
-			serverCheckResult = ng
-		}
-
-		clientCheckResult := ok
-		if skew.ClientNeedsUpdate || skew.ClientNeedsDowngradeOrServerCanBeUpdated {
-			clientCheckResult = ng
-		}
-
-		fmt.Fprintf(
-			os.Stdout, resultTemplate,
-			serverCheckResult, clientCheckResult,
-		)
-		fmt.Println("")
-
-		if skew.ServerNeedsUpdate {
-			fmt.Fprintf(
-				os.Stdout, yellow(serverTooOldTemplate),
-				skew.ServerAndLatestDelta,
-			)
-			fmt.Println("")
-		}
-		if skew.ClientNeedsUpdate {
-			fmt.Fprintf(
-				os.Stdout, yellow(clientTooOldTemplate),
-				skew.ServerAndClientDelta,
-			)
-			fmt.Println("")
-		}
-		if skew.ClientNeedsDowngradeOrServerCanBeUpdated {
-			fmt.Fprintf(
-				os.Stdout, yellow(clientTooNewOrServerTooOldTemplate),
-				skew.ServerAndClientDelta,
-			)
-			fmt.Println("")
-		}
-
-		return nil
+func RunSkew() error {
+	versions, err := InspectCurrentVersion()
+	if err != nil {
+		return err
 	}
+
+	latest, err := InspectLatestVersion()
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintf(
+		os.Stdout, verTemplate,
+		versions.Server, versions.Client, latest,
+	)
+
+	fmt.Println("")
+
+	skew := CalcKubeVerSkew(latest, versions.Server, versions.Client)
+
+	ok := green("OK")
+	ng := red("NG")
+	serverCheckResult := ok
+	if skew.ServerNeedsUpdate {
+		serverCheckResult = ng
+	}
+
+	clientCheckResult := ok
+	if skew.ClientNeedsUpdate || skew.ClientNeedsDowngradeOrServerCanBeUpdated {
+		clientCheckResult = ng
+	}
+
+	fmt.Fprintf(
+		os.Stdout, resultTemplate,
+		serverCheckResult, clientCheckResult,
+	)
+	fmt.Println("")
+
+	if skew.ServerNeedsUpdate {
+		fmt.Fprintf(
+			os.Stdout, yellow(serverTooOldTemplate),
+			skew.ServerAndLatestDelta,
+		)
+		fmt.Println("")
+	}
+	if skew.ClientNeedsUpdate {
+		fmt.Fprintf(
+			os.Stdout, yellow(clientTooOldTemplate),
+			skew.ServerAndClientDelta,
+		)
+		fmt.Println("")
+	}
+	if skew.ClientNeedsDowngradeOrServerCanBeUpdated {
+		fmt.Fprintf(
+			os.Stdout, yellow(clientTooNewOrServerTooOldTemplate),
+			skew.ServerAndClientDelta,
+		)
+		fmt.Println("")
+	}
+
+	return nil
 }
 
 // InspectCurrentVersion runs "kubectl version --short" and parses the result
 // to inspect the kubectl and kubernetes cluster version.
 // This function highly depends on the kubectl implementation, so
 // it might be broken when kubectl makes breaking changes.
-func InspectCurrentVersion() (*Versions, error) {
+var InspectCurrentVersion = func() (*Versions, error) {
 	versions := &Versions{}
 
 	cmd := exec.Command("kubectl", []string{"version", "--short"}...)

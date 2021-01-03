@@ -17,7 +17,9 @@ func NewCheckCmd() *cobra.Command {
 	skew := &cobra.Command{
 		Use:   "check [flags]",
 		Short: "checks kubectl update",
-		RunE:  RunCheck(),
+		RunE: func(c *cobra.Command, args []string) error {
+			return RunCheck()
+		},
 	}
 
 	// flags for debug
@@ -27,30 +29,28 @@ func NewCheckCmd() *cobra.Command {
 	return skew
 }
 
-func RunCheck() func(c *cobra.Command, args []string) error {
-	return func(c *cobra.Command, args []string) error {
-		versions, err := InspectCurrentVersion()
-		if err != nil {
-			return err
-		}
-
-		latest, err := InspectLatestVersion()
-		if err != nil {
-			return err
-		}
-
-		template := "current: v%s\nlatest:  v%s\n"
-
-		fmt.Fprintf(os.Stdout, template, versions.Client, latest)
-
-		if latest.Compare(versions.Client) != 0 {
-			template = "kubectl update v%s is available.\n"
-			fmt.Fprintf(os.Stdout, yellow(template), latest)
-		} else {
-			template = "kubectl is already up-to-date.\n"
-			fmt.Fprintf(os.Stdout, green(template))
-		}
-
-		return nil
+func RunCheck() error {
+	versions, err := InspectCurrentVersion()
+	if err != nil {
+		return err
 	}
+
+	latest, err := InspectLatestVersion()
+	if err != nil {
+		return err
+	}
+
+	template := "current: v%s\nlatest:  v%s\n"
+
+	fmt.Fprintf(os.Stdout, template, versions.Client, latest)
+
+	if latest.Compare(versions.Client) != 0 {
+		template = "kubectl update v%s is available.\n"
+		fmt.Fprintf(os.Stdout, yellow(template), latest)
+	} else {
+		template = "kubectl is already up-to-date.\n"
+		fmt.Fprintf(os.Stdout, green(template))
+	}
+
+	return nil
 }
