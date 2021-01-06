@@ -5,24 +5,10 @@ import (
 	"github.com/spf13/cobra"
 
 	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"k8s.io/client-go/tools/clientcmd/api"
 )
 
 type Options struct {
 	configFlags *genericclioptions.ConfigFlags
-
-	resultingContext     *api.Context
-	resultingContextName string
-
-	userSpecifiedCluster   string
-	userSpecifiedContext   string
-	userSpecifiedAuthInfo  string
-	userSpecifiedNamespace string
-
-	rawConfig      api.Config
-	listNamespaces bool
-	args           []string
-
 	genericclioptions.IOStreams
 }
 
@@ -32,13 +18,9 @@ func New(streams genericclioptions.IOStreams) *cobra.Command {
 		IOStreams:   streams,
 	}
 
-	ver := NewVerCmd()
-	check := NewCheckCmd()
 	skew := NewSkewCmd()
 
-	o.configFlags.AddFlags(ver.Flags())
-	ver.AddCommand(check)
-	ver.AddCommand(skew)
+	o.configFlags.AddFlags(skew.Flags())
 
-	return ver
+	return skew
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	flags := pflag.NewFlagSet("kubectl-ver", pflag.ExitOnError)
+	flags := pflag.NewFlagSet("kubectl-skew", pflag.ExitOnError)
 	pflag.CommandLine = flags
 
 	root := kubectlver.New(genericclioptions.IOStreams{
