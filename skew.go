@@ -65,9 +65,9 @@ func NewSkewCmd() *cobra.Command {
 	}
 
 	// flags for debug
-	skew.Flags().StringVarP(&debugClient, "debug-client", "c", "", "param for debug: inject client version")
+	skew.Flags().StringVarP(&debugClient, "debug-client", "", "", "param for debug: inject client version")
 	skew.Flags().MarkHidden("debug-client")
-	skew.Flags().StringVarP(&debugServer, "debug-server", "s", "", "param for debug: inject server version")
+	skew.Flags().StringVarP(&debugServer, "debug-server", "", "", "param for debug: inject server version")
 	skew.Flags().MarkHidden("debug-server")
 
 	return skew
