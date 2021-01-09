@@ -5,7 +5,7 @@
 
 kubectl plugin to show your kubernetes version is "skewed"
 
-![skew-s](https://user-images.githubusercontent.com/60682957/105186576-35fce700-5b75-11eb-8e3a-cd4c0fdabff4.png)
+![skew-s](https://user-images.githubusercontent.com/60682957/105196269-cb50a900-5b7e-11eb-9505-4d0f14a4ca84.png)
 
 ## What's this?
 
@@ -33,15 +33,15 @@ You simply need to run `kubectl skew`, which shows if there is the kubernetes cl
 
 * cluster version problem
 
-![skew-s](https://user-images.githubusercontent.com/60682957/105186576-35fce700-5b75-11eb-8e3a-cd4c0fdabff4.png)
+![skew-s](https://user-images.githubusercontent.com/60682957/105196269-cb50a900-5b7e-11eb-9505-4d0f14a4ca84.png)
 
 * kubectl version problem
 
-![skew-c](https://user-images.githubusercontent.com/60682957/105186580-36957d80-5b75-11eb-8686-44742c0605b9.png)
+![skew-c](https://user-images.githubusercontent.com/60682957/105196266-cab81280-5b7e-11eb-81c6-e140842335e8.png)
 
 * following version skew policy
 
-![skew](https://user-images.githubusercontent.com/60682957/105186753-5d53b400-5b75-11eb-9f6c-5149511e3bbf.png)
+![skew](https://user-images.githubusercontent.com/60682957/105196273-cc81d600-5b7e-11eb-99d9-31ef0213b9bb.png)
 
 ## Upcoming releases
 
