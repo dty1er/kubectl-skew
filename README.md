@@ -37,7 +37,7 @@ You simply need to run `kubectl skew`, which shows if there is the kubernetes cl
 
 * kubectl version problem
 
-![skew-c](https://user-images.githubusercontent.com/60682957/105196266-cab81280-5b7e-11eb-81c6-e140842335e8.png)
+![skew-c](https://user-images.githubusercontent.com/60682957/105197817-5d0ce600-5b80-11eb-8505-f47afad7dad3.png)
 
 * following version skew policy
 
