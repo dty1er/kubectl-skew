@@ -9,13 +9,13 @@ kubectl plugin to show your kubernetes version is "skewed"
 
 ## What's this?
 
-With `kubectl-skew` , you can check if your kubernetes usage meets the __version skew policy__.
+With `kubectl skew` , you can check if your kubernetes usage meets the __version skew policy__.
 
-In kubernetes, [version skew policy](https://kubernetes.io/docs/setup/release/version-skew-policy/) is a bit confusing, especially beginners.
-It is important to understand you are always following the policy because using unsupported cluster/kubectl is problematic and even dangerous.
-To know if your kubernetes usage is met with it, you need to know the cluster version, client version, and current latest version. Of course, you have to understand the detail of the policy.
-`kubectl ver skew` command helps this situation. When you run it, it automatically fetches the cluster, client, and latest version and judges if it's following the policy.
-By using this, it will be easy for you to understand it your kubernetes usage is met the policy.
+In kubernetes, [version skew policy](https://kubernetes.io/docs/setup/release/version-skew-policy/) is a bit confusing, especially for beginners.<br>
+However, it is important to make sure you are always following the policy because using unsupported cluster/kubectl is problematic and even dangerous.<br>
+To know if your kubernetes usage is met with it, you need to know the cluster version, client version, and current latest version. Of course, you have to understand the detail of the policy.<br>
+`kubectl ver skew` command helps this situation. When you run it, it automatically fetches the cluster, client, and latest version and judges if it's following the policy.<br>
+By using `kubectl skew`, it will be easy for you to understand if your kubernetes usage meets the policy.
 
 ## Installation
 
