@@ -1,7 +1,6 @@
 # kubectl skew
 
 ![test](https://github.com/dty1er/kubectl-skew/workflows/test/badge.svg?branch=main)
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/dty1er/kubectl-skew)](https://goreportcard.com/report/github.com/dty1er/kubectl-skew)
 
 kubectl plugin to show your kubernetes version is "skewed"
