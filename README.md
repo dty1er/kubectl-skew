@@ -24,7 +24,7 @@ Currently "krew" kubectl plugin manager installation is unsupported.
 ### Manually via go get
 
 ```sh
-go install github.com/dty1er/kubecolor/cmd/kubecolor
+go install github.com/dty1er/kubectl-skew/cmd/kubectl-skew
 ```
 
 ## Usage
