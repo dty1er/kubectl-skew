@@ -9,11 +9,7 @@ kubectl plugin for better "kubectl version"
 
 ## What's this?
 
-`kubectl-ver` is a plugin to be an alternative to kubectl official "version" subcommand.
-`kubectl-ver` can do all "kubectl version" can do. You can use `kubectl ver` command as an complete alternative to `kubectl version`.
-Additionally, it has some other features as the subcommand of `kubectl ver`.
-
-* Check if your kubernetes usage meets the __version skew policy__
+With `kubectl-ver` , you can check if your kubernetes usage meets the __version skew policy__.
 
 In kubernetes, [version skew policy](https://kubernetes.io/docs/setup/release/version-skew-policy/) is a bit confusing, especially beginners.
 It is important to understand you are always following the policy because using unsupported cluster/kubectl is problematic and even dangerous.
@@ -25,6 +21,9 @@ By using this, it will be easy for you to understand it your kubernetes usage is
 
 Because kubernetes development is fast, it is not easy to follow the latest kubectl.
 `kubectl ver check` cheks if kubectl update is available.
+
+
+Also, `kubectl-ver` can do all "kubectl version" can do. You can use `kubectl ver` command as an complete alternative to `kubectl version`.
 
 ## Installation
 
