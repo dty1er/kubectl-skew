@@ -29,10 +29,10 @@ latest:  %s`
 There are %d minor version skew with the latest which must be within 2.`
 
 	clientTooOldTemplate = `Your kubectl version is unsupported.
-There are %d minor version skew with the server which must be within 1.`
+There are %d minor version skew with the server which must be between -1 and 1.`
 
 	clientTooNewOrServerTooOldTemplate = `Your kubernetes cluster version is supported, but your kubectl version is too new. 
-kubectl and kubernetes cluster version skew must be within 1, but it's %d.
+kubectl and kubernetes cluster version skew must be between -1 and 1, but it's %d.
 You can update kubernetes cluster or downgrade kubectl to follow the version skew policy.`
 )
 
