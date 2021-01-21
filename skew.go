@@ -210,7 +210,7 @@ var InspectCurrentVersion = func() (*Versions, error) {
 	return versions, nil
 }
 
-func InspectLatestVersion() (*semver.Version, error) {
+var InspectLatestVersion = func() (*semver.Version, error) {
 	u := "https://dl.k8s.io/release/stable.txt"
 
 	resp, err := http.Get(u)
