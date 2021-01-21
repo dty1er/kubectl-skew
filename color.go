@@ -1,5 +1,5 @@
 // Copyright © 2021 Hidetatsu Yaginuma. All rights reserved.
-package ver
+package skew
 
 import "fmt"
 
