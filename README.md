@@ -19,13 +19,14 @@ By using `kubectl skew`, it will be easy for you to understand if your kubernete
 
 ## Installation
 
-Currently "krew" kubectl plugin manager installation is unsupported.
-
-### Manually via go get
+You can install `kubectl-skew` by [krew](https://github.com/kubernetes-sigs/krew) (kubectl plugin manager).
+Run below to install on your machine.
 
 ```sh
-go install github.com/dty1er/kubectl-skew/cmd/kubectl-skew
+kubectl krew install skew
 ```
+
+To use `krew`, first you need to install it. Follow the [krew installation guide](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
 
 ## Usage
 
