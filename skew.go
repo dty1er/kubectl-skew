@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -60,7 +61,7 @@ func NewSkewCmd() *cobra.Command {
 		Use:   "skew [flags]",
 		Short: "checks kubernetes cluster and kubectl version skew",
 		RunE: func(c *cobra.Command, args []string) error {
-			return RunSkew()
+			return RunSkew(os.Stdout)
 		},
 	}
 
@@ -73,7 +74,7 @@ func NewSkewCmd() *cobra.Command {
 	return skew
 }
 
-func RunSkew() error {
+func RunSkew(w io.Writer) error {
 	versions, err := InspectCurrentVersion()
 	if err != nil {
 		return err
@@ -85,11 +86,9 @@ func RunSkew() error {
 	}
 
 	fmt.Fprintf(
-		os.Stdout, verTemplate,
+		w, verTemplate+"\n",
 		versions.Server, versions.Client, latest,
 	)
-
-	fmt.Println("")
 
 	skew := CalcKubeVerSkew(latest, versions.Server, versions.Client)
 
@@ -106,28 +105,26 @@ func RunSkew() error {
 	}
 
 	fmt.Fprintf(
-		os.Stdout, resultTemplate,
+		w, resultTemplate+"\n",
 		serverCheckResult, clientCheckResult,
 	)
-	fmt.Println("")
 
 	if skew.ServerNeedsUpdate {
 		fmt.Fprintf(
-			os.Stdout, yellow(serverTooOldTemplate),
+			w, yellow(serverTooOldTemplate)+"\n",
 			skew.ServerAndLatestDelta,
 		)
-		fmt.Println("")
 	}
 	if skew.ClientNeedsUpdate {
 		fmt.Fprintf(
-			os.Stdout, yellow(clientTooOldTemplate),
+			w, yellow(clientTooOldTemplate)+"\n",
 			skew.ServerAndClientDelta,
 		)
 		fmt.Println("")
 	}
 	if skew.ClientNeedsDowngradeOrServerCanBeUpdated {
 		fmt.Fprintf(
-			os.Stdout, yellow(clientTooNewOrServerTooOldTemplate),
+			w, yellow(clientTooNewOrServerTooOldTemplate)+"\n",
 			skew.ServerAndClientDelta,
 		)
 		fmt.Println("")
