@@ -2,11 +2,131 @@
 package skew
 
 import (
+	"bytes"
+	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/Masterminds/semver"
 )
+
+func TestRunSkew(t *testing.T) {
+	tests := []struct {
+		name                      string
+		inspectCurrentVersionMock func() (*Versions, error)
+		inspectLatestVersionMock  func() (*semver.Version, error)
+		want                      []string
+		wantErr                   bool
+	}{
+		{
+			name: "both server and client meets the policy",
+			inspectCurrentVersionMock: func() (*Versions, error) {
+				return &Versions{
+					Server: semver.MustParse("v1.18.0"),
+					Client: semver.MustParse("v1.17.0"),
+				}, nil
+			},
+			inspectLatestVersionMock: func() (*semver.Version, error) {
+				return semver.MustParse("v1.20.0"), nil
+			},
+			want: []string{
+				fmt.Sprintf(verTemplate, "1.18.0", "1.17.0", "1.20.0"),
+				fmt.Sprintf(resultTemplate, green("OK"), green("OK")),
+			},
+		},
+		{
+			name: "server is too old",
+			inspectCurrentVersionMock: func() (*Versions, error) {
+				return &Versions{
+					Server: semver.MustParse("v1.17.0"),
+					Client: semver.MustParse("v1.17.0"),
+				}, nil
+			},
+			inspectLatestVersionMock: func() (*semver.Version, error) {
+				return semver.MustParse("v1.20.0"), nil
+			},
+			want: []string{
+				fmt.Sprintf(verTemplate, "1.17.0", "1.17.0", "1.20.0"),
+				fmt.Sprintf(resultTemplate, red("NG"), green("OK")),
+				fmt.Sprintf(serverTooOldTemplate, 3),
+			},
+		},
+		{
+			name: "server and client is too old",
+			inspectCurrentVersionMock: func() (*Versions, error) {
+				return &Versions{
+					Server: semver.MustParse("v1.17.0"),
+					Client: semver.MustParse("v1.15.0"),
+				}, nil
+			},
+			inspectLatestVersionMock: func() (*semver.Version, error) {
+				return semver.MustParse("v1.20.0"), nil
+			},
+			want: []string{
+				fmt.Sprintf(verTemplate, "1.17.0", "1.15.0", "1.20.0"),
+				fmt.Sprintf(resultTemplate, red("NG"), red("NG")),
+				fmt.Sprintf(serverTooOldTemplate, 3),
+				fmt.Sprintf(clientTooOldTemplate, 2),
+			},
+		},
+		{
+			name: "client is too old",
+			inspectCurrentVersionMock: func() (*Versions, error) {
+				return &Versions{
+					Server: semver.MustParse("v1.18.0"),
+					Client: semver.MustParse("v1.16.0"),
+				}, nil
+			},
+			inspectLatestVersionMock: func() (*semver.Version, error) {
+				return semver.MustParse("v1.20.0"), nil
+			},
+			want: []string{
+				fmt.Sprintf(verTemplate, "1.18.0", "1.16.0", "1.20.0"),
+				fmt.Sprintf(resultTemplate, green("OK"), red("NG")),
+				fmt.Sprintf(clientTooOldTemplate, 2),
+			},
+		},
+		{
+			name: "server version is OK, but client is too new",
+			inspectCurrentVersionMock: func() (*Versions, error) {
+				return &Versions{
+					Server: semver.MustParse("v1.18.0"),
+					Client: semver.MustParse("v1.20.0"),
+				}, nil
+			},
+			inspectLatestVersionMock: func() (*semver.Version, error) {
+				return semver.MustParse("v1.20.0"), nil
+			},
+			want: []string{
+				fmt.Sprintf(verTemplate, "1.18.0", "1.20.0", "1.20.0"),
+				fmt.Sprintf(resultTemplate, green("OK"), red("NG")),
+				fmt.Sprintf(clientTooNewOrServerTooOldTemplate, -2),
+			},
+		},
+	}
+
+	for _, c := range tests {
+		c := c
+		t.Run(c.name, func(t *testing.T) {
+			InspectCurrentVersion = c.inspectCurrentVersionMock
+			InspectLatestVersion = c.inspectLatestVersionMock
+
+			var buff bytes.Buffer
+			err := RunSkew(&buff)
+			if (err != nil) != c.wantErr {
+				t.Errorf("wantErr does not much")
+			}
+
+			got := buff.String()
+			for _, w := range c.want {
+				if !strings.Contains(got, w) {
+					t.Errorf("got does not contain %s. got is %s", w, got)
+				}
+			}
+		})
+	}
+}
 
 func TestInspectLatestVersion(t *testing.T) {
 	// Cannot verify what value is returned because
@@ -18,14 +138,6 @@ func TestInspectLatestVersion(t *testing.T) {
 }
 
 func TestCalcKubeVerSkew(t *testing.T) {
-	parseVer := func(t *testing.T, s string) *semver.Version {
-		v, err := semver.NewVersion(s)
-		if err != nil {
-			t.Errorf("invalid version is given: %s", s)
-		}
-
-		return v
-	}
 	tests := []struct {
 		name                   string
 		latest, server, client string
@@ -88,9 +200,9 @@ func TestCalcKubeVerSkew(t *testing.T) {
 	for _, c := range tests {
 		c := c
 		t.Run(c.name, func(t *testing.T) {
-			latest := parseVer(t, c.latest)
-			server := parseVer(t, c.server)
-			client := parseVer(t, c.client)
+			latest := semver.MustParse(c.latest)
+			server := semver.MustParse(c.server)
+			client := semver.MustParse(c.client)
 			v := CalcKubeVerSkew(latest, server, client)
 
 			if !reflect.DeepEqual(v, c.want) {
